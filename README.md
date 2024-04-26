@@ -1,4 +1,4 @@
-# Mini-projet Kubernetes
+# Wordpress with Kubernetes
 
 
 ------------
@@ -10,7 +10,7 @@ LinkedIn : https://www.linkedin.com/in/stevy-monkam-naktakwen-a84299181/
 
 ## Voici le schéma d'infrastructure que je propose
 
-![suggested-architecture](https://github.com/stevymonkam/wordpress-with-kubernetes/blob/main/img/suggested-architecture.jpg)
+![suggested-architecture](https://github.com/stevymonkam/wordpress-with-kubernetes/blob/main/img/Screenshot 2024-04-26 125644.png)
 
 ## Étape 1 : Création du namespace
 Pour commencer, j'ai créé un namespace `dev` afin de séparer mes ressources des autres environnements.
