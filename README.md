@@ -258,6 +258,9 @@ spec:
   type: NodePort
 ```
 
+À ce stade, notre application est déjà accessible depuis l'extérieur via l'adresse IP virtuelle (VIP) du cluster ou celle de l'un des nœuds, suivie du port 30080. Cependant, je souhaitais rendre mon application accessible via une URL simple. Pour ce faire, j'ai créé une règle Ingress permettant d'exposer mon application WordPress à l'aide d'un domaine personnalisé.
+
+
 ## Étape 6 : Ingress
 
 # Configuration de MetalLB et Ingress Nginx pour Kubernetes
@@ -279,11 +282,59 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.9/confi
 
 Assurez-vous de vérifier que les ressources ont été déployées avec succès en utilisant la commande :
 
+```
+get all -n metallb-system
+```
+```yaml
+ ipaddresspool.yml
 
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: default
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.99.150-192.168.99.255 # set your local subnet free range
+  autoAssign: true
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: default
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - default
+~             
+```
+```
+ kubectl apply -f ipaddresspool.yml
+```
+Cette configuration permet à MetalLB d'allouer des adresses IP à partir du pool spécifié et de les annoncer sur le réseau local pour les services au sein de votre cluster Kubernetes.
 
-À ce stade, notre application est déjà accessible depuis l'extérieur via l'adresse IP virtuelle (VIP) du cluster ou celle de l'un des nœuds, suivie du port 30080. Cependant, je souhaitais rendre mon application accessible via une URL simple. Pour ce faire, j'ai créé une règle Ingress permettant d'exposer mon application WordPress à l'aide d'un domaine personnalisé.
+```
+ kubectl get IPAddresspool -n metallb-system
+```
 
-En effet, lorsque http://dev-wordpress.pozos.fr sera sollicité, c'est l'ingress controller qui recevra la requête et la redirigera vers le service wordpress-svc à l'intérieur du cluster sur le port 8080. Ce service se chargera ensuite de joindre le pod à l'intérieur duquel tourne le conteneur wordpress.
+## installation ingress
+```
+ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.0/deploy/static/provider/cloud/deploy.yaml  
+```
+```
+kubectl get svc -n ingress-nginx -o wide
+```
+![suggested-architecture](https://github.com/stevymonkam/wordpress-with-kubernetes/blob/main/img/Immagine%202024-04-26%20124811.png)
+![suggested-architecture](https://github.com/stevymonkam/wordpress-with-kubernetes/blob/main/img/Screenshot%20(106).png)
+
+```
+ kubectl get po -n ingress-nginx
+ kubectl get svc -n ingress-nginx
+ kubectl get all -n dev
+```
+![suggested-architecture](https://github.com/stevymonkam/wordpress-with-kubernetes/blob/main/img/Screenshot%202024-04-26%20130202.png)
+
+En effet, lorsque http://dev-wordpress.pozos.fr sera sollicité, c'est l'ingress controller qui recevra la requête et la redirigera vers le service wordpress-svc à l'intérieur du cluster sur le port 80. Ce service se chargera ensuite de joindre le pod à l'intérieur duquel tourne le conteneur wordpress.
 
 
 ```yaml
@@ -305,25 +356,15 @@ spec:
           service:
             name: wordpress-svc
             port:
-              number: 8080
+              number: 80
 ```
 
 ## Étape 7 : Déploiement
 Pour déployer ces appplications avec leurs eléments infrastructure, j'utilise mon manifest de déploiement tout-en-un :
 
-```
-kubectl apply -f aio-wordpress-mysql-deployment.yml
-```
 
-Si, vous souhaitez déployer les objets les uns après les autres, rendez-vous dans le dossier *Step-by-step deployment* puis exécutez la commande `kubectl apply -f <filename>` pour chaque fichier dans l'ordre que je vous propose :
+![suggested-architecture](https://github.com/stevymonkam/wordpress-with-kubernetes/blob/main/img/Screenshot%202024-04-26%20125750.png)
 
-![image](https://user-images.githubusercontent.com/101605739/227747834-407fb89f-25e2-42ab-ba3e-18d83c33f79f.png)
-
-Vous pouvez également utiliser `kubectl` pour vérifier l'état de vos ressources déployées :
-
-```
-kubectl get all -n dev
-```
 
 ## Étape 8 : Consommation de l'application
 
@@ -335,6 +376,6 @@ Après le déploiement, vous pouvez accéder à votre application WordPress en u
 
 # Conclusion
 
-En conclusion, ce mini-projet Kubernetes m'a permis de mettre en place une infrastructure solide pour déployer une application WordPress couplée à une base de données MySQL. Grâce à l'utilisation des ressources Kubernetes telles que les namespaces, les volumes persistants, les ConfigMaps, les déploiements, les services et les Ingress, j'ai pu créer un environnement flexible, évolutif et facilement maintenable pour cette application.
+En conclusion, ce projet Kubernetes m'a permis de mettre en place une infrastructure solide pour déployer une application WordPress couplée à une base de données MySQL. Grâce à l'utilisation des ressources Kubernetes telles que les namespaces, les volumes persistants, les ConfigMaps, les déploiements, les services et les Ingress, j'ai pu créer un environnement flexible, évolutif et facilement maintenable pour cette application.
 
-Cette expérience m'a également permis d'appliquer les concepts et les compétences acquises lors du bootcamp DevOps eazytraining, renforçant ainsi ma compréhension des différentes étapes et ressources impliquées dans le déploiement d'une application sur un cluster Kubernetes.
+
