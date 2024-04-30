@@ -360,17 +360,13 @@ spec:
 ```
 
 ## Étape 7 : Déploiement
-Pour déployer ces appplications avec leurs eléments infrastructure, j'utilise mon manifest de déploiement tout-en-un :
-
-
-![suggested-architecture](https://github.com/stevymonkam/wordpress-with-kubernetes/blob/main/img/Screenshot%202024-04-26%20125750.png)
-
+Pour déployer ces appplications avec leurs eléments infrastructure, j'utilise la commande kubectl apply -f <filename> 
 
 ## Étape 8 : Consommation de l'application
 
 Après le déploiement, vous pouvez accéder à votre application WordPress en utilisant l'adresse http://dev-wordpress.pozos.fr (en supposant que vous ayez correctement configuré la résolution DNS pour pointer vers votre cluster Kubernetes).
 
-![suggested-architecture](https://github.com/Abdel-had/mini-projet-kubernetes/blob/main/img/suggested-architecture.jpg)
+![suggested-architecture](https://github.com/stevymonkam/wordpress-with-kubernetes/blob/main/img/Screenshot%202024-04-26%20125750.png)
 
 --------
 
