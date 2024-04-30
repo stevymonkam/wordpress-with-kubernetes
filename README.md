@@ -360,7 +360,10 @@ spec:
 ```
 
 ## Étape 7 : Déploiement
-Pour déployer ces appplications avec leurs eléments infrastructure, j'utilise la commande kubectl apply -f <filename> 
+Pour déployer ces appplications avec leurs eléments infrastructure, j'utilise la commande 
+```
+kubectl apply -f <filename> 
+```
 
 ## Étape 8 : Consommation de l'application
 
