@@ -260,7 +260,7 @@ specs:
 
 At this stage, our application is now accessible from the exterior via the virtual IP (VIP) address of the cluster or cell of one of the nodes, on the port side of 30080. However, this makes the application accessible via a simple URL . Pour ce faire, j'ai créé une règle Ingress permettant d'exposer mon WordPress application à l'aide d'un domaine personalisé.
 
-## Stage 6: Entrance
+## Stage 6: ingress
 
 # Configuration of MetalLB and Nginx Input for Kubernetes
 
